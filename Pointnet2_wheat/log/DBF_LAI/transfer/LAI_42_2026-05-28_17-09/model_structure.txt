@@ -1,0 +1,254 @@
+==================== Hyperparameters ====================
+batch_size                    : 16
+decay_rate                    : 1e-05
+early_stopping_patience       : 40
+epoch                         : 200
+gpu                           : auto
+learning_rate                 : 0.001
+log_dir                       : log
+model                         : ['DBF_LAI']
+ms_path                       : data/ms_npy_LAI
+npoint                        : 16384
+optimizer                     : Adam
+point_path                    : data/npy_data_LAI
+seeds                         : [42, 23, 123]
+stats_path                    : LAI_data.csv
+types                         : ['transfer']
+
+==================== Model Architecture ====================
+get_model(
+  (sa1): PointNetSetAbstractionMsg(
+    (conv_blocks): ModuleList(
+      (0): ModuleList(
+        (0): Conv2d(10, 16, kernel_size=(1, 1), stride=(1, 1))
+        (1): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(16, 32, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (1): ModuleList(
+        (0): Conv2d(10, 32, kernel_size=(1, 1), stride=(1, 1))
+        (1): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(32, 64, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (2): ModuleList(
+        (0): Conv2d(10, 32, kernel_size=(1, 1), stride=(1, 1))
+        (1): Conv2d(32, 48, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(48, 64, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (bn_blocks): ModuleList(
+      (0): ModuleList(
+        (0-1): 2 x BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        (2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      )
+      (1): ModuleList(
+        (0-1): 2 x BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      )
+      (2): ModuleList(
+        (0): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        (1): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      )
+    )
+  )
+  (sa2): PointNetSetAbstractionMsg(
+    (conv_blocks): ModuleList(
+      (0): ModuleList(
+        (0): Conv2d(163, 32, kernel_size=(1, 1), stride=(1, 1))
+        (1): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(32, 64, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (1-2): 2 x ModuleList(
+        (0): Conv2d(163, 64, kernel_size=(1, 1), stride=(1, 1))
+        (1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (bn_blocks): ModuleList(
+      (0): ModuleList(
+        (0-1): 2 x BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      )
+      (1-2): 2 x ModuleList(
+        (0-1): 2 x BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+        (2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      )
+    )
+  )
+  (sa3): PointNetSetAbstraction(
+    (mlp_convs): ModuleList(
+      (0): Conv2d(323, 256, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (mlp_bns): ModuleList(
+      (0): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (2): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    )
+  )
+  (pn_proj): Sequential(
+    (0): Linear(in_features=1024, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Linear(in_features=512, out_features=256, bias=True)
+    (4): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+  )
+  (ms_spe_proj): Sequential(
+    (0): Linear(in_features=4, out_features=1024, bias=True)
+    (1): LayerNorm((1024,), eps=1e-05, elementwise_affine=True, bias=True)
+    (2): ReLU(inplace=True)
+    (3): Linear(in_features=1024, out_features=512, bias=True)
+    (4): LayerNorm((512,), eps=1e-05, elementwise_affine=True, bias=True)
+    (5): ReLU(inplace=True)
+    (6): Linear(in_features=512, out_features=256, bias=True)
+    (7): LayerNorm((256,), eps=1e-05, elementwise_affine=True, bias=True)
+    (8): ReLU(inplace=True)
+  )
+  (attention_net): Sequential(
+    (0): Linear(in_features=512, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Linear(in_features=512, out_features=256, bias=True)
+    (4): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): Linear(in_features=256, out_features=2, bias=True)
+    (7): Softmax(dim=1)
+  )
+  (final_mlp): Sequential(
+    (0): Linear(in_features=512, out_features=512, bias=True)
+    (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Linear(in_features=512, out_features=256, bias=True)
+    (4): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): Linear(in_features=256, out_features=1, bias=True)
+  )
+)
+
+==================== Detailed Layer Definitions ====================
+sa1.conv_blocks.0.0.weight               | Shape: [16, 10, 1, 1]      
+sa1.conv_blocks.0.0.bias                 | Shape: [16]                
+sa1.conv_blocks.0.1.weight               | Shape: [16, 16, 1, 1]      
+sa1.conv_blocks.0.1.bias                 | Shape: [16]                
+sa1.conv_blocks.0.2.weight               | Shape: [32, 16, 1, 1]      
+sa1.conv_blocks.0.2.bias                 | Shape: [32]                
+sa1.conv_blocks.1.0.weight               | Shape: [32, 10, 1, 1]      
+sa1.conv_blocks.1.0.bias                 | Shape: [32]                
+sa1.conv_blocks.1.1.weight               | Shape: [32, 32, 1, 1]      
+sa1.conv_blocks.1.1.bias                 | Shape: [32]                
+sa1.conv_blocks.1.2.weight               | Shape: [64, 32, 1, 1]      
+sa1.conv_blocks.1.2.bias                 | Shape: [64]                
+sa1.conv_blocks.2.0.weight               | Shape: [32, 10, 1, 1]      
+sa1.conv_blocks.2.0.bias                 | Shape: [32]                
+sa1.conv_blocks.2.1.weight               | Shape: [48, 32, 1, 1]      
+sa1.conv_blocks.2.1.bias                 | Shape: [48]                
+sa1.conv_blocks.2.2.weight               | Shape: [64, 48, 1, 1]      
+sa1.conv_blocks.2.2.bias                 | Shape: [64]                
+sa1.bn_blocks.0.0.weight                 | Shape: [16]                
+sa1.bn_blocks.0.0.bias                   | Shape: [16]                
+sa1.bn_blocks.0.1.weight                 | Shape: [16]                
+sa1.bn_blocks.0.1.bias                   | Shape: [16]                
+sa1.bn_blocks.0.2.weight                 | Shape: [32]                
+sa1.bn_blocks.0.2.bias                   | Shape: [32]                
+sa1.bn_blocks.1.0.weight                 | Shape: [32]                
+sa1.bn_blocks.1.0.bias                   | Shape: [32]                
+sa1.bn_blocks.1.1.weight                 | Shape: [32]                
+sa1.bn_blocks.1.1.bias                   | Shape: [32]                
+sa1.bn_blocks.1.2.weight                 | Shape: [64]                
+sa1.bn_blocks.1.2.bias                   | Shape: [64]                
+sa1.bn_blocks.2.0.weight                 | Shape: [32]                
+sa1.bn_blocks.2.0.bias                   | Shape: [32]                
+sa1.bn_blocks.2.1.weight                 | Shape: [48]                
+sa1.bn_blocks.2.1.bias                   | Shape: [48]                
+sa1.bn_blocks.2.2.weight                 | Shape: [64]                
+sa1.bn_blocks.2.2.bias                   | Shape: [64]                
+sa2.conv_blocks.0.0.weight               | Shape: [32, 163, 1, 1]     
+sa2.conv_blocks.0.0.bias                 | Shape: [32]                
+sa2.conv_blocks.0.1.weight               | Shape: [32, 32, 1, 1]      
+sa2.conv_blocks.0.1.bias                 | Shape: [32]                
+sa2.conv_blocks.0.2.weight               | Shape: [64, 32, 1, 1]      
+sa2.conv_blocks.0.2.bias                 | Shape: [64]                
+sa2.conv_blocks.1.0.weight               | Shape: [64, 163, 1, 1]     
+sa2.conv_blocks.1.0.bias                 | Shape: [64]                
+sa2.conv_blocks.1.1.weight               | Shape: [64, 64, 1, 1]      
+sa2.conv_blocks.1.1.bias                 | Shape: [64]                
+sa2.conv_blocks.1.2.weight               | Shape: [128, 64, 1, 1]     
+sa2.conv_blocks.1.2.bias                 | Shape: [128]               
+sa2.conv_blocks.2.0.weight               | Shape: [64, 163, 1, 1]     
+sa2.conv_blocks.2.0.bias                 | Shape: [64]                
+sa2.conv_blocks.2.1.weight               | Shape: [64, 64, 1, 1]      
+sa2.conv_blocks.2.1.bias                 | Shape: [64]                
+sa2.conv_blocks.2.2.weight               | Shape: [128, 64, 1, 1]     
+sa2.conv_blocks.2.2.bias                 | Shape: [128]               
+sa2.bn_blocks.0.0.weight                 | Shape: [32]                
+sa2.bn_blocks.0.0.bias                   | Shape: [32]                
+sa2.bn_blocks.0.1.weight                 | Shape: [32]                
+sa2.bn_blocks.0.1.bias                   | Shape: [32]                
+sa2.bn_blocks.0.2.weight                 | Shape: [64]                
+sa2.bn_blocks.0.2.bias                   | Shape: [64]                
+sa2.bn_blocks.1.0.weight                 | Shape: [64]                
+sa2.bn_blocks.1.0.bias                   | Shape: [64]                
+sa2.bn_blocks.1.1.weight                 | Shape: [64]                
+sa2.bn_blocks.1.1.bias                   | Shape: [64]                
+sa2.bn_blocks.1.2.weight                 | Shape: [128]               
+sa2.bn_blocks.1.2.bias                   | Shape: [128]               
+sa2.bn_blocks.2.0.weight                 | Shape: [64]                
+sa2.bn_blocks.2.0.bias                   | Shape: [64]                
+sa2.bn_blocks.2.1.weight                 | Shape: [64]                
+sa2.bn_blocks.2.1.bias                   | Shape: [64]                
+sa2.bn_blocks.2.2.weight                 | Shape: [128]               
+sa2.bn_blocks.2.2.bias                   | Shape: [128]               
+sa3.mlp_convs.0.weight                   | Shape: [256, 323, 1, 1]    
+sa3.mlp_convs.0.bias                     | Shape: [256]               
+sa3.mlp_convs.1.weight                   | Shape: [512, 256, 1, 1]    
+sa3.mlp_convs.1.bias                     | Shape: [512]               
+sa3.mlp_convs.2.weight                   | Shape: [1024, 512, 1, 1]   
+sa3.mlp_convs.2.bias                     | Shape: [1024]              
+sa3.mlp_bns.0.weight                     | Shape: [256]               
+sa3.mlp_bns.0.bias                       | Shape: [256]               
+sa3.mlp_bns.1.weight                     | Shape: [512]               
+sa3.mlp_bns.1.bias                       | Shape: [512]               
+sa3.mlp_bns.2.weight                     | Shape: [1024]              
+sa3.mlp_bns.2.bias                       | Shape: [1024]              
+pn_proj.0.weight                         | Shape: [512, 1024]         
+pn_proj.0.bias                           | Shape: [512]               
+pn_proj.1.weight                         | Shape: [512]               
+pn_proj.1.bias                           | Shape: [512]               
+pn_proj.3.weight                         | Shape: [256, 512]          
+pn_proj.3.bias                           | Shape: [256]               
+pn_proj.4.weight                         | Shape: [256]               
+pn_proj.4.bias                           | Shape: [256]               
+ms_spe_proj.0.weight                     | Shape: [1024, 4]           
+ms_spe_proj.0.bias                       | Shape: [1024]              
+ms_spe_proj.1.weight                     | Shape: [1024]              
+ms_spe_proj.1.bias                       | Shape: [1024]              
+ms_spe_proj.3.weight                     | Shape: [512, 1024]         
+ms_spe_proj.3.bias                       | Shape: [512]               
+ms_spe_proj.4.weight                     | Shape: [512]               
+ms_spe_proj.4.bias                       | Shape: [512]               
+ms_spe_proj.6.weight                     | Shape: [256, 512]          
+ms_spe_proj.6.bias                       | Shape: [256]               
+ms_spe_proj.7.weight                     | Shape: [256]               
+ms_spe_proj.7.bias                       | Shape: [256]               
+attention_net.0.weight                   | Shape: [512, 512]          
+attention_net.0.bias                     | Shape: [512]               
+attention_net.1.weight                   | Shape: [512]               
+attention_net.1.bias                     | Shape: [512]               
+attention_net.3.weight                   | Shape: [256, 512]          
+attention_net.3.bias                     | Shape: [256]               
+attention_net.4.weight                   | Shape: [256]               
+attention_net.4.bias                     | Shape: [256]               
+attention_net.6.weight                   | Shape: [2, 256]            
+attention_net.6.bias                     | Shape: [2]                 
+final_mlp.0.weight                       | Shape: [512, 512]          
+final_mlp.0.bias                         | Shape: [512]               
+final_mlp.1.weight                       | Shape: [512]               
+final_mlp.1.bias                         | Shape: [512]               
+final_mlp.3.weight                       | Shape: [256, 512]          
+final_mlp.3.bias                         | Shape: [256]               
+final_mlp.4.weight                       | Shape: [256]               
+final_mlp.4.bias                         | Shape: [256]               
+final_mlp.6.weight                       | Shape: [1, 256]            
+final_mlp.6.bias                         | Shape: [1]                 
